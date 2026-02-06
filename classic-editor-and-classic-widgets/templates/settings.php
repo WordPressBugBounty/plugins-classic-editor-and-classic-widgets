@@ -10,16 +10,16 @@
 			</ul>
 
 			<div class="tabs-content">
-				<section class="tab-panel">
+				<section class="tab-panel general-tab">
 					<?php load_template( CEW_PATH . '/templates/settings/general.php' ); ?>
 				</section>
-				<section class="tab-panel">
+				<section class="tab-panel user-roles-tab">
 					<?php
 					load_template( CEW_PATH . '/templates/settings/users.php' );
 					cew_show_pro_overlay();
 					?>
 				</section>
-				<section class="tab-panel">
+				<section class="tab-panel advanced-tab">
 					<?php
 					load_template( CEW_PATH . '/templates/settings/advanced.php' );
 					cew_show_pro_overlay();

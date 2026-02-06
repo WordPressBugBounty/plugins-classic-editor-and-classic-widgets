@@ -22,10 +22,16 @@ class Gutenberg {
 
 			add_action( 'add_meta_boxes', array( $this, 'add_switcher_meta_box' ), 10, 2 );
 			add_action( 'enqueue_block_editor_assets', array( $this, 'add_block_editor_switcher' ) );
+
+			// Widgets
+			add_action( 'widgets_admin_page', array( $this, 'add_switch_to_block_editor_button' ) );
+			add_action( 'widgets_admin_page', array( $this, 'add_switch_to_classic_editor_button' ) );
+			add_action( 'admin_init', array( $this, 'enable_block_editor_for_widgets' ) );
 		} else {
 			$this->enable_classic_editor();
-			$this->enable_classic_widgets();
 		}
+
+		$this->enable_classic_widgets();
 	}
 
 	public function disable_block_editor( $enable_block_editor, $post ) {
@@ -60,7 +66,10 @@ class Gutenberg {
 	}
 
 	public function enable_classic_widgets() {
-		if ( Settings::is_classic( 'widgets_editor' ) ) {
+		$enable_block_editor_for_widgets = ( get_option( 'enable_block_editor_for_widgets', false ) && ! isset( $_GET['widgets-classic-editor'] ) )
+			|| ! empty( $_GET['widgets-block-editor'] );
+
+		if ( Settings::is_classic( 'widgets_editor' ) && ! $enable_block_editor_for_widgets ) {
 			add_filter( 'gutenberg_use_widgets_block_editor', '__return_false' );
 			add_filter( 'use_widgets_block_editor', '__return_false' );
 		}
@@ -246,5 +255,52 @@ class Gutenberg {
 		}
 
 		return $is_editable;
+	}
+
+	public function add_switch_to_block_editor_button() {
+		// Only show on widgets page and when using classic widgets
+		if ( ! wp_use_widgets_block_editor() ) {
+			?>
+			<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				// Find the heading and add the button after it
+				var heading = $('h1.wp-heading-inline');
+				if (heading.length) {
+					var switchButton = $('<a class="page-title-action" href="<?php echo esc_url( add_query_arg( 'widgets-block-editor', '1', admin_url( 'widgets.php' ) ) ); ?>" style="margin-left: 5px;"><?php esc_html_e( 'Switch to Block Editor', 'classic-editor-and-classic-widgets' ); ?></a>');
+					heading.after(switchButton);
+				}
+			});
+			</script>
+			<?php
+		}
+	}
+
+	public function add_switch_to_classic_editor_button() {
+		// Only show on widgets page and when using block editor for widgets
+		if ( wp_use_widgets_block_editor() ) {
+			?>
+			<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				setTimeout(function() {
+					var widgetAreas = $('.edit-widgets-widget-areas .edit-widgets-widget-areas__top-container > div:first');
+					if (widgetAreas.length) {
+						var switchButton = $('<a class="components-button is-next-40px-default-size is-tertiary" href="<?php echo esc_url( add_query_arg( 'widgets-classic-editor', '1', admin_url( 'widgets.php' ) ) ); ?>" style="margin-left: -6px;"><?php esc_html_e( 'Switch to Classic Editor', 'classic-editor-and-classic-widgets' ); ?></a>');
+						widgetAreas.append(switchButton);
+					}
+				}, 500);
+			});
+			</script>
+			<?php
+		}
+	}
+
+	public function enable_block_editor_for_widgets() {
+		if ( isset( $_GET['widgets-block-editor'] ) && '1' === $_GET['widgets-block-editor'] ) {
+			update_option( 'enable_block_editor_for_widgets', true );
+		}
+
+		if ( isset( $_GET['widgets-classic-editor'] ) && '1' === $_GET['widgets-classic-editor'] ) {
+			update_option( 'enable_block_editor_for_widgets', false );
+		}
 	}
 }

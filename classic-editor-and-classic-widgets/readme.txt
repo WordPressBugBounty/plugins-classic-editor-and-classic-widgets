@@ -4,8 +4,8 @@ Donate link: https://wpgrim.com/
 Tags: disable gutenberg, classic editor, classic widgets, block editor
 Requires at least: 4.9
 Requires PHP: 5.6
-Tested up to: 6.8.2
-Stable tag: 1.4.6
+Tested up to: 6.9
+Stable tag: 1.4.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,16 @@ This section describes how to install the plugin and get it working.
 3. Please find more details on Plugin Installation in documentation
 
 == Changelog ==
+
+= 1.4.9 - 2026-01-10 =
+* Settings page appearance improved
+
+= 1.4.8 - 2025-12-03 =
+* WordPress 6.9 compatible
+* Minor bug fixes
+
+= 1.4.7 - 2025-10-13 =
+* Appearance > Widgets Editor Switcher button added
 
 = 1.4.6 - 2025-08-12 =
 * WordPress 6.8.2 compatible

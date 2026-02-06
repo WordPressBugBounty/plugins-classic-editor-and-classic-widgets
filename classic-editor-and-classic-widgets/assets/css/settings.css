@@ -144,6 +144,10 @@ label.selected {
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
 }
 
+.advanced-tab .pro-overlay div {
+  padding: 10px 30px;
+}
+
 /*
  * Badges
  */
